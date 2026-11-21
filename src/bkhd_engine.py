@@ -63,7 +63,7 @@ import threading
 import time
 import uuid
 
-VERSION = "1.3.0"
+VERSION = "1.3.1~beta1"
 AUTHOR = "fabionet"
 AUTHOR_EMAIL = "fabionet666@gmail.com"
 COPYRIGHT = f"© 2026 {AUTHOR}"

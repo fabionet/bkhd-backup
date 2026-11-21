@@ -1,6 +1,6 @@
 # BKHD Backup
 
-**Versione 1.3.0** · © 2026 fabionet <fabionet666@gmail.com> · Licenza **GNU GPL v3 o successiva**
+**Versione 1.3.1~beta1** (anteprima; ultima stabile: 1.3.0) · © 2026 fabionet <fabionet666@gmail.com> · Licenza **GNU GPL v3 o successiva**
 
 📘 Guida illustrata in PDF: [`docs/Guida-BKHD-Backup.pdf`](docs/Guida-BKHD-Backup.pdf)
 (installata anche in `/usr/share/doc/bkhd-backup/` e apribile dal menu ☰ del programma).
@@ -56,6 +56,12 @@ nella posizione esatta → `fsync` → svuotamento della RAM → pacchetto succe
   con verifica (l'immagine non entra in un CD).
 - Nuovi comandi: `usb-format`, `disc-burn`, `live-write --data-fs exfat|ext4`.
 
+### Novità della versione 1.3.1 (anteprima beta1)
+- Immagine BKHD Live ricostruita con i pacchetti di Ubuntu 24.04 aggiornati (Firefox 160) e con la guida PDF
+  aggiornata (nella 1.3.0 la live conteneva la versione precedente della guida).
+- È un'anteprima: avvio collaudato in macchina virtuale (BIOS e UEFI con Secure Boot), non ancora su pennette
+  e DVD reali.
+
 ### Sicurezza
 - Password di amministratore richiesta a ogni operazione sui dischi (`auth_admin`, nessuna autorizzazione ricordata).
 - Cartella in RAM accessibile solo a root; rclone (eseguito con l'utente) usa `rcat`/`cat` a flusso.
@@ -93,7 +99,7 @@ sopra il cloud scelto e selezionarlo in BKHD Backup.
 ```bash
 sudo apt install rclone zstd python3-gi gir1.2-gtk-3.0
 ./packaging/build-deb.sh
-sudo apt install ./dist/bkhd-backup_1.3.0_all.deb
+sudo apt install ./dist/bkhd-backup_*_all.deb
 ```
 
 Poi apri **BKHD Backup** dal menu delle applicazioni. Al primo avvio premi **«Configura cloud…»**:

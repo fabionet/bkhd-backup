@@ -44,7 +44,7 @@ done
 [ -n "$OUT" ] && [ -n "$PAYLOAD" ] && [ -d "$PAYLOAD" ] || die "uso: $0 --payload DIR --output FILE.iso"
 [ "$(uname -m)" = x86_64 ] || die "la costruzione e' supportata solo su PC a 64 bit (x86_64)"
 [[ "$MIRROR" =~ ^https?://[A-Za-z0-9._~:/%-]+$ ]] || die "indirizzo del mirror non valido"
-[[ "$VERSION" =~ ^[A-Za-z0-9._-]+$ ]] || die "versione non valida"
+[[ "$VERSION" =~ ^[A-Za-z0-9._~-]+$ ]] || die "versione non valida"
 # la cartella di lavoro deve essere quella preparata (e verificata) dal motore di BKHD Backup
 [ -d "$WORK" ] && [ -f "$WORK/.bkhd-workdir" ] && [ "$(stat -c %u "$WORK")" = 0 ] \
     || die "cartella di lavoro non preparata da BKHD Backup"
