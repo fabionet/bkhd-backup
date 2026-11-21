@@ -1,6 +1,6 @@
 # BKHD Backup
 
-**Versione 1.3.1~beta1** (anteprima; ultima stabile: 1.3.0) · © 2026 fabionet <fabionet666@gmail.com> · Licenza **GNU GPL v3 o successiva**
+**Versione 1.3.1~beta1** (anteprima; ultima stabile: 1.3.0) · © 2026 FabionNET - fabionet666@gmail.com · Licenza **GNU GPL v3 o successiva**
 
 📘 Guida illustrata in PDF: [`docs/Guida-BKHD-Backup.pdf`](docs/Guida-BKHD-Backup.pdf)
 (installata anche in `/usr/share/doc/bkhd-backup/` e apribile dal menu ☰ del programma).
@@ -208,7 +208,7 @@ python3 docs/build_guide.py
 
 ## Autore e licenza
 
-Copyright © 2026 **fabionet** — fabionet666@gmail.com
+Copyright © 2026 **FabioNET** — fabionet666@gmail.com
 
 Questo programma è software libero: puoi redistribuirlo e/o modificarlo secondo i termini della
 GNU General Public License pubblicata dalla Free Software Foundation, versione 3 della licenza o
