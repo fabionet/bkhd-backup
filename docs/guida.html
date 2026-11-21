@@ -1,0 +1,841 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>BKHD Backup — Guida illustrata</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm 20mm 16mm;
+    @bottom-left { content: "BKHD Backup {{VERSION}} — Guida illustrata"; font: 8pt 'Ubuntu', sans-serif; color: #7a8594; }
+    @bottom-right { content: "Pagina " counter(page) " di " counter(pages); font: 8pt 'Ubuntu', sans-serif; color: #7a8594; } }
+  @page :first { margin: 0; @bottom-left { content: none } @bottom-right { content: none } }
+  :root { --blue: #1f6fd6; --navy: #183a7a; --orange: #f08a1c; --red: #c7162b; --green: #2e7d32;
+          --ink: #1d2433; --muted: #5d6878; --line: #dfe5ee; --soft: #f3f6fb; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { margin: 0; font: 10.5pt/1.5 'Ubuntu', 'Noto Sans', 'DejaVu Sans', sans-serif; color: var(--ink); }
+  h1 { font-size: 21pt; color: var(--navy); margin: 0 0 4mm; padding-bottom: 2mm; border-bottom: 3px solid var(--blue);
+       break-before: page; break-after: avoid; }
+  h1 .num { display: inline-block; min-width: 11mm; color: var(--blue); }
+  h2 { font-size: 13.5pt; color: var(--navy); margin: 6mm 0 2mm; break-after: avoid; }
+  p { margin: 0 0 2.6mm; }
+  ul, ol { margin: 0 0 3mm; padding-left: 6mm; }
+  li { margin-bottom: 1mm; }
+  code, kbd, .mono { font-family: 'Ubuntu Mono', 'DejaVu Sans Mono', monospace; font-size: 9.8pt; }
+  code { background: var(--soft); border: 1px solid var(--line); border-radius: 3px; padding: 0 1.2mm; }
+  kbd { border: 1px solid #b9c2cf; border-bottom-width: 2px; border-radius: 4px; padding: 0 1.4mm; background: #fff; }
+  pre { font: 9.4pt/1.45 'Ubuntu Mono', 'DejaVu Sans Mono', monospace; background: #1e2430; color: #e7edf5;
+        border-radius: 6px; padding: 3mm 4mm; margin: 0 0 3.5mm; white-space: pre-wrap; break-inside: avoid; }
+  pre .c { color: #8fa1b7; } pre .y { color: #ffd479; } pre .g { color: #8be28b; }
+  table { width: 100%; border-collapse: collapse; margin: 1mm 0 4mm; font-size: 9.6pt; break-inside: avoid; }
+  th { background: var(--navy); color: #fff; text-align: left; padding: 1.6mm 2.2mm; font-weight: 600; }
+  td { border-bottom: 1px solid var(--line); padding: 1.5mm 2.2mm; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8fafd; }
+  .box { border-radius: 6px; padding: 3mm 4mm 3mm 13mm; margin: 0 0 4mm; position: relative; break-inside: avoid; }
+  .box::before { position: absolute; left: 3.5mm; top: 2.6mm; width: 6.5mm; height: 6.5mm; border-radius: 50%;
+                 color: #fff; font-weight: 700; text-align: center; line-height: 6.5mm; font-size: 10pt; }
+  .box p:last-child, .box ul:last-child { margin-bottom: 0; }
+  .tip { background: #eaf3ff; border-left: 4px solid var(--blue); } .tip::before { content: "i"; background: var(--blue); }
+  .warn { background: #fff4e5; border-left: 4px solid var(--orange); } .warn::before { content: "!"; background: var(--orange); }
+  .danger { background: #fdecee; border-left: 4px solid var(--red); } .danger::before { content: "!"; background: var(--red); }
+  figure { margin: 2mm 0 4mm; break-inside: avoid; text-align: center; }
+  figcaption { font-size: 8.8pt; color: var(--muted); margin-top: 1.6mm; }
+  .shot { position: relative; display: inline-block; max-width: 100%; }
+  .shot img { display: block; max-width: 100%; border-radius: 8px; box-shadow: 0 1.5mm 4mm rgba(16, 32, 64, .22);
+              border: 1px solid #cfd6e0; }
+  .badge { position: absolute; width: 6.4mm; height: 6.4mm; margin: -3.2mm 0 0 -3.2mm; border-radius: 50%;
+           background: var(--orange); color: #fff; font: 700 9.5pt/6.4mm 'Ubuntu', sans-serif; text-align: center;
+           border: 2px solid #fff; box-shadow: 0 .6mm 1.6mm rgba(0, 0, 0, .35); }
+  .lead { position: absolute; height: 0; border-top: 1.6px dashed var(--orange); opacity: .9; }
+  .legend { counter-reset: none; list-style: none; padding: 0; margin: 0 0 4mm; display: grid;
+            grid-template-columns: 1fr 1fr; gap: 1.4mm 6mm; break-inside: avoid; }
+  .legend li { margin: 0; padding-left: 8.5mm; position: relative; font-size: 9.6pt; }
+  .legend li b.n { position: absolute; left: 0; top: .3mm; width: 6mm; height: 6mm; border-radius: 50%; background: var(--orange);
+                   color: #fff; font-size: 9pt; line-height: 6mm; text-align: center; }
+  .legend.one { grid-template-columns: 1fr; }
+  .side { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; align-items: start; break-inside: avoid; }
+  .steps { list-style: none; padding: 0; counter-reset: s; }
+  .steps > li { counter-increment: s; position: relative; padding-left: 10mm; margin-bottom: 2.4mm; }
+  .steps > li::before { content: counter(s); position: absolute; left: 0; top: 0; width: 6.6mm; height: 6.6mm;
+                        border-radius: 50%; background: var(--blue); color: #fff; font-weight: 700; text-align: center;
+                        line-height: 6.6mm; font-size: 9.5pt; }
+  .diagram { width: 100%; margin: 1mm 0 4mm; break-inside: avoid; }
+  .small { font-size: 9pt; color: var(--muted); }
+  .nobreak { break-inside: avoid; }
+
+  /* copertina */
+  .cover { height: 297mm; position: relative; overflow: hidden; color: #fff;
+           background: linear-gradient(160deg, #2f80ed 0%, #1a3f8f 62%, #12285c 100%); }
+  .cover .inner { position: absolute; left: 22mm; right: 22mm; top: 48mm; }
+  .cover img { width: 46mm; height: 46mm; filter: drop-shadow(0 2mm 4mm rgba(0, 0, 0, .35)); }
+  .cover h1 { border: 0; color: #fff; font-size: 40pt; margin: 10mm 0 2mm; padding: 0; break-before: avoid; }
+  .cover .sub { font-size: 17pt; opacity: .92; margin-bottom: 14mm; }
+  .cover .claim { font-size: 12pt; line-height: 1.6; max-width: 140mm; opacity: .9; }
+  .cover .chips { margin-top: 10mm; display: flex; gap: 3mm; flex-wrap: wrap; }
+  .cover .chips span { border: 1px solid rgba(255, 255, 255, .45); border-radius: 20px; padding: 1.2mm 4mm; font-size: 9.5pt; }
+  .cover .foot { position: absolute; left: 22mm; right: 22mm; bottom: 20mm; font-size: 10pt; opacity: .85;
+                 display: flex; justify-content: space-between; border-top: 1px solid rgba(255, 255, 255, .3); padding-top: 4mm; }
+  .cover .stripe { position: absolute; left: 22mm; right: 22mm; top: 200mm; display: flex; gap: 1.6mm; }
+  .cover .stripe i { flex: 1; height: 7mm; border-radius: 2px; background: rgba(255, 255, 255, .16); }
+  .cover .stripe i.on { background: var(--orange); }
+  .cover .stripe-label { position: absolute; left: 22mm; top: 210mm; font-size: 9pt; opacity: .7; }
+
+  .toc { list-style: none; padding: 0; margin: 4mm 0 0; }
+  .toc li { display: flex; align-items: baseline; padding: 2mm 0; border-bottom: 1px dotted #c3ccd8; font-size: 11pt; }
+  .toc li b { color: var(--blue); width: 11mm; }
+  .toc li span.d { flex: 1; color: var(--muted); font-size: 9.4pt; margin-left: 3mm; }
+</style>
+</head>
+<body>
+
+<!-- ============================ COPERTINA ============================ -->
+<section class="cover">
+  <div class="inner">
+    <img src="../data/bkhd-backup.svg" alt="">
+    <h1>BKHD Backup</h1>
+    <div class="sub">Guida illustrata — versione {{VERSION}}</div>
+    <div class="claim">Copia l'intero disco <b>settore per settore</b> direttamente sul cloud, a pacchetti
+      <b>.bkhd</b> da 1,2 MB (floppy) a 8 GB preparati in RAM, senza scrivere nulla sui dischi locali.
+      E lo ripristina, pacchetto per pacchetto, con verifica di integrità.</div>
+    <div class="chips"><span>Ubuntu</span><span>Debian</span><span>Linux Mint</span><span>Pop!_OS</span>
+      <span>Google Drive · OneDrive · Dropbox · Mega · S3 · WebDAV · SFTP</span>
+      <span>disco locale</span><span>solo settori usati</span><span>password AES-256</span>
+      <span>pennetta avviabile</span></div>
+  </div>
+  <div class="stripe">{{STRIPE}}</div>
+  <div class="stripe-label">un disco da 1 TB ≈ 117 pacchetti da 8 GB — in RAM ne esiste sempre uno solo alla volta</div>
+  <div class="foot"><span>© 2026 fabionet · fabionet666@gmail.com</span><span>Licenza GNU GPL v3 o successiva</span></div>
+</section>
+
+<!-- ============================ INDICE ============================ -->
+<h1>Indice</h1>
+<ol class="toc">
+  <li><b>1</b>Che cos'è BKHD Backup<span class="d">come funziona, in breve</span></li>
+  <li><b>2</b>Requisiti<span class="d">sistema, RAM, connessione, cloud</span></li>
+  <li><b>3</b>Installazione<span class="d">pacchetto .deb e dipendenze</span></li>
+  <li><b>4</b>Primo avvio, cloud e aspetto<span class="d">«Configura cloud…», zoom, temi giorno e notte</span></li>
+  <li><b>5</b>Eseguire un backup<span class="d">impostazioni, avanzamento, risultato</span></li>
+  <li><b>6</b>Opzioni avanzate<span class="d">disco locale, settori usati, password, settori danneggiati</span></li>
+  <li><b>7</b>Riprendere un backup interrotto<span class="d">«Cerca backup interrotti» e «Riprendi»</span></li>
+  <li><b>8</b>Ripristinare un backup<span class="d">su disco o su file immagine</span></li>
+  <li><b>9</b>Verificare l'integrità di un backup<span class="d">senza scrivere nulla</span></li>
+  <li><b>10</b>Pennetta e DVD BKHD Live<span class="d">pennetta avviabile, chiavetta per i backup, DVD</span></li>
+  <li><b>11</b>Uso da riga di comando<span class="d">server e script</span></li>
+  <li><b>12</b>Formato dei file<span class="d">manifest, indice e pacchetti .bkhd</span></li>
+  <li><b>13</b>Risoluzione dei problemi<span class="d">domande frequenti</span></li>
+  <li><b>14</b>Informazioni, autore e licenza<span class="d">GNU GPL v3</span></li>
+</ol>
+
+<!-- ============================ 1 ============================ -->
+<h1><span class="num">1</span>Che cos'è BKHD Backup</h1>
+<p>BKHD Backup crea una <b>copia esatta di un intero disco</b> (o di una partizione): non copia i file uno per uno,
+  ma legge <b>tutti i settori</b> del disco, dal primo all'ultimo. La copia contiene quindi anche tabella delle
+  partizioni, settori di avvio, sistemi operativi, partizioni cifrate e spazio libero: ripristinandola si ottiene
+  un disco identico all'originale, pronto per l'avvio.</p>
+<p>La copia può andare <b>sul cloud</b> oppure su un <b>disco o una cartella locale</b> (disco esterno, NAS montato).
+  Verso il cloud la copia viaggia <b>senza passare dal disco locale</b>: il disco viene
+  suddiviso in pacchetti di dimensione scelta da te: dai formati dei floppy (1,2 MB, 1,44 MB, 2,88 MB)
+  fino a 8 GB. Ogni pacchetto viene preparato in una
+  cartella temporanea che esiste <b>solo in memoria RAM</b>, caricato sul cloud e poi cancellato dalla RAM.</p>
+
+<h2>Il ciclo del backup</h2>
+<svg class="diagram" viewBox="0 0 720 250" xmlns="http://www.w3.org/2000/svg" font-family="Ubuntu, sans-serif">
+  <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M0 0L10 5L0 10z" fill="#1f6fd6"/></marker>
+    <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M0 0L10 5L0 10z" fill="#9aa6b5"/></marker></defs>
+  <!-- disco -->
+  <rect x="10" y="40" width="170" height="110" rx="12" fill="#eef1f5" stroke="#9aa6b5" stroke-width="2"/>
+  <text x="95" y="66" text-anchor="middle" font-size="15" font-weight="700" fill="#183a7a">Disco</text>
+  <text x="95" y="84" text-anchor="middle" font-size="11" fill="#5d6878">letto settore per settore</text>
+  <g transform="translate(26 98)">
+    <rect width="20" height="30" rx="2" fill="#9aa6b5"/><rect x="23" width="20" height="30" rx="2" fill="#f08a1c"/>
+    <rect x="46" width="20" height="30" rx="2" fill="#d5dbe3"/><rect x="69" width="20" height="30" rx="2" fill="#d5dbe3"/>
+    <rect x="92" width="20" height="30" rx="2" fill="#d5dbe3"/><rect x="115" width="20" height="30" rx="2" fill="#d5dbe3"/>
+  </g>
+  <text x="95" y="143" text-anchor="middle" font-size="10" fill="#5d6878">pacchetto 1 · 2 · 3 …</text>
+  <!-- RAM -->
+  <rect x="275" y="40" width="170" height="110" rx="12" fill="#fff4e5" stroke="#f08a1c" stroke-width="2"/>
+  <text x="360" y="66" text-anchor="middle" font-size="15" font-weight="700" fill="#183a7a">RAM</text>
+  <text x="360" y="84" text-anchor="middle" font-size="11" fill="#5d6878">cartella temporanea (tmpfs)</text>
+  <rect x="318" y="96" width="84" height="40" rx="7" fill="#f08a1c"/>
+  <text x="360" y="121" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">.bkhd</text>
+  <!-- cloud -->
+  <path d="M575 150 a32 32 0 0 1 4-63 a44 44 0 0 1 84-8 a34 34 0 0 1 37 33 a30 30 0 0 1-4 38 z" fill="#eaf3ff" stroke="#1f6fd6" stroke-width="2"/>
+  <text x="628" y="122" text-anchor="middle" font-size="15" font-weight="700" fill="#183a7a">Cloud</text>
+  <text x="628" y="139" text-anchor="middle" font-size="10" fill="#5d6878">via rclone</text>
+  <!-- frecce -->
+  <line x1="184" y1="95" x2="270" y2="95" stroke="#1f6fd6" stroke-width="3" marker-end="url(#ar)"/>
+  <circle cx="227" cy="72" r="12" fill="#1f6fd6"/><text x="227" y="77" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">1</text>
+  <line x1="449" y1="95" x2="556" y2="95" stroke="#1f6fd6" stroke-width="3" marker-end="url(#ar)"/>
+  <circle cx="500" cy="72" r="12" fill="#1f6fd6"/><text x="500" y="77" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">2</text>
+  <!-- cancellazione -->
+  <circle cx="420" cy="150" r="12" fill="#c7162b"/><text x="420" y="155" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">3</text>
+  <!-- ripeti -->
+  <path d="M360 160 C 360 225, 95 225, 95 158" fill="none" stroke="#9aa6b5" stroke-width="2.5" stroke-dasharray="6 5" marker-end="url(#ar2)"/>
+  <circle cx="228" cy="208" r="12" fill="#5d6878"/><text x="228" y="213" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">4</text>
+  <text x="248" y="236" font-size="11" fill="#5d6878">ripeti con il pacchetto successivo fino alla fine del disco</text>
+</svg>
+<ol class="steps">
+  <li><b>Lettura in RAM.</b> I settori del pacchetto vengono letti dal disco e scritti nel file
+    <code>nome.part00001.bkhd</code> dentro una cartella montata in RAM (tmpfs con opzione <i>noswap</i>, quindi i dati
+    non finiscono nemmeno nella partizione di swap).</li>
+  <li><b>Upload e attesa.</b> Il pacchetto viene caricato sul cloud. Il programma <b>attende la fine dell'upload</b> e
+    controlla che il file sul cloud abbia la dimensione esatta; in caso di errore riprova automaticamente.</li>
+  <li><b>Cancellazione dalla RAM.</b> Solo dopo la conferma il pacchetto viene cancellato dalla RAM: da quel momento esiste
+    <b>solo sul cloud</b>. L'indice dei pacchetti salvati viene aggiornato sul cloud.</li>
+  <li><b>Pacchetto successivo.</b> Si ripete fino all'ultimo settore. In RAM c'è sempre <b>un solo pacchetto</b>.</li>
+</ol>
+<p>Il <b>ripristino</b> fa il percorso inverso: scarica un pacchetto in RAM, ne verifica l'integrità, lo scrive sul disco
+  nella posizione esatta, svuota la RAM e passa al successivo (capitolo 7).</p>
+
+<!-- ============================ 2 ============================ -->
+<h1><span class="num">2</span>Requisiti</h1>
+<table>
+  <tr><th style="width:32%">Requisito</th><th>Dettagli</th></tr>
+  <tr><td><b>Sistema operativo</b></td><td>Ubuntu 20.04 o successivo, Debian 11 o successivo e derivate
+    (Linux Mint, Pop!_OS, Zorin OS, elementary OS, MX Linux, Kubuntu, Xubuntu…).</td></tr>
+  <tr><td><b>Programmi necessari</b></td><td><code>rclone</code> (collegamento al cloud), <code>python3-gi</code> e
+    <code>gir1.2-gtk-3.0</code> (interfaccia), <code>pkexec</code> (permessi di amministratore). Facoltativo:
+    <code>zstd</code> per la compressione. Vengono installati automaticamente con il pacchetto.</td></tr>
+  <tr><td><b>Password di amministratore</b></td><td>Necessaria per leggere o scrivere un intero disco: viene chiesta
+    all'avvio di ogni backup o ripristino.</td></tr>
+  <tr><td><b>Memoria RAM libera</b></td><td>Dimensione del pacchetto + circa 600 MB (vedi tabella sotto).</td></tr>
+  <tr><td><b>Account cloud</b></td><td>Uno qualsiasi dei servizi supportati da rclone, con spazio sufficiente.</td></tr>
+  <tr><td><b>Connessione Internet</b></td><td>Stabile; il backup può essere interrotto e ripreso in qualsiasi momento.</td></tr>
+</table>
+
+<h2>Quale dimensione dei pacchetti scegliere</h2>
+<table>
+  <tr><th>Formato</th><th>RAM libera necessaria</th><th>Pacchetti per una chiavetta da 16 GB</th><th>Pacchetti per un disco da 500 GB</th><th>Pacchetti per un disco da 1 TB</th></tr>
+  <tr><td>Floppy 5¼" — 1,2 MB</td><td>circa 580 MB</td><td>12.591</td><td>406.902</td><td>813.803</td></tr>
+  <tr><td>Floppy 3½" — 1,44 MB</td><td>circa 580 MB</td><td>10.493</td><td>339.085</td><td>678.169</td></tr>
+  <tr><td>Floppy 3½" ED — 2,88 MB</td><td>circa 580 MB</td><td>5.247</td><td>169.543</td><td>339.085</td></tr>
+  <tr><td>50 MB</td><td>circa 630 MB</td><td>296</td><td>9.537</td><td>19.074</td></tr>
+  <tr><td>100 MB</td><td>circa 680 MB</td><td>148</td><td>4.769</td><td>9.537</td></tr>
+  <tr><td>650 MB (CD) · 700 MB</td><td>circa 1,2 GB</td><td>23</td><td>734</td><td>1.468</td></tr>
+  <tr><td>1 GB</td><td>circa 1,6 GB</td><td>15</td><td>466</td><td>932</td></tr>
+  <tr><td>2 GB</td><td>circa 2,6 GB</td><td>8</td><td>233</td><td>466</td></tr>
+  <tr><td>4 GB (predefinito) · 4,7 GB (DVD)</td><td>circa 4,6 GB</td><td>4</td><td>117</td><td>233</td></tr>
+  <tr><td>8 GB</td><td>circa 8,6 GB</td><td>2</td><td>59</td><td>117</td></tr>
+</table>
+<div class="side">
+  <div class="box tip"><p><b>Come scegliere.</b> Pacchetti <b>più piccoli</b> richiedono meno RAM e, se la connessione
+    cade, si perde meno lavoro. Pacchetti <b>più grandi</b> sono molto più veloci, perché ogni pacchetto è un
+    trasferimento separato. L'interfaccia mostra la RAM disponibile e il numero di pacchetti, e <b>impedisce
+    l'avvio</b> se la RAM non basta.</p></div>
+  <div class="box warn"><p><b>Formati floppy (1,2 – 2,88 MB).</b> Utili per partizioni e chiavette piccole, per PC
+    con pochissima RAM o per cloud che accettano solo file piccoli. Su un disco intero diventano centinaia di
+    migliaia di file: il backup richiede giorni e alcuni servizi limitano il numero di file. Oltre 50.000
+    pacchetti il programma avvisa e chiede conferma.</p></div>
+</div>
+<h2>Spazio necessario sul cloud</h2>
+<p>Senza compressione il backup occupa esattamente quanto il disco (1 TB → 1 TB). Con la <b>compressione zstd</b>
+  attiva (consigliata) lo spazio vuoto del disco occupa quasi zero: un disco da 1 TB con 200 GB di dati occupa
+  in genere tra 120 e 200 GB sul cloud.</p>
+
+<!-- ============================ 3 ============================ -->
+<h1><span class="num">3</span>Installazione</h1>
+<ol class="steps">
+  <li>Apri il <b>Terminale</b> (<kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>T</kbd>) nella cartella che contiene il file
+    <code>bkhd-backup_{{VERSION}}_all.deb</code>.</li>
+  <li>Installa il pacchetto: le dipendenze (rclone, zstd…) vengono scaricate automaticamente.
+<pre><span class="y">sudo apt install ./bkhd-backup_{{VERSION}}_all.deb</span></pre></li>
+  <li>Apri <b>BKHD Backup</b> dal menu delle applicazioni, oppure premi il tasto <kbd>Super</kbd> e digita «BKHD».</li>
+</ol>
+<div class="side">
+  <div>
+    <h2 style="margin-top:0">Disinstallazione</h2>
+<pre><span class="y">sudo apt remove bkhd-backup</span></pre>
+    <p class="small">La disinstallazione non tocca i backup già presenti sul cloud né la configurazione di rclone.</p>
+    <h2>Aggiornare rclone (facoltativo)</h2>
+    <p>La versione di rclone nei repository può essere datata. Se un servizio cloud non funziona, installa l'ultima
+      versione ufficiale:</p>
+<pre><span class="y">sudo -v ; curl https://rclone.org/install.sh | sudo bash</span></pre>
+  </div>
+  <figure style="margin-top:0">
+    <img src="../data/bkhd-backup.svg" style="width:38mm" alt="">
+    <figcaption>L'icona di BKHD Backup: il disco invia i pacchetti <b>.bkhd</b> (arancioni) al cloud.</figcaption>
+  </figure>
+</div>
+
+<!-- ============================ 4 ============================ -->
+<h1><span class="num">4</span>Primo avvio, cloud e aspetto</h1>
+<p>Al primo avvio la barra in alto avvisa che non c'è ancora nessun cloud collegato. Il collegamento si fa
+  <b>una volta sola</b>.</p>
+{{FIG:01-primo-avvio|Primo avvio: nessun cloud ancora configurato.|66}}
+<ul class="legend">
+  <li><b class="n">A</b>Avviso «Nessun cloud configurato».</li>
+  <li><b class="n">B</b>Pulsante <b>Configura cloud…</b>: apre la configurazione guidata in un terminale.</li>
+</ul>
+
+<h2>Configurazione guidata (esempio con Google Drive)</h2>
+<p>Premendo <b>Configura cloud…</b> si apre un terminale con il programma <code>rclone config</code>. Rispondi così:</p>
+<pre><span class="c">No remotes found, make a new one?</span>
+n) New remote          <span class="c">→ digita</span> <span class="y">n</span> <span class="c">e premi Invio</span>
+name&gt;                  <span class="c">→ digita un nome breve, es.</span> <span class="y">gdrive</span>
+Storage&gt;               <span class="c">→ digita il nome o il numero del servizio, es.</span> <span class="y">drive</span>
+client_id&gt;             <span class="c">→ lascia vuoto, premi Invio</span>
+client_secret&gt;         <span class="c">→ lascia vuoto, premi Invio</span>
+scope&gt;                 <span class="c">→</span> <span class="y">1</span> <span class="c">(accesso completo)</span>
+service_account_file&gt;  <span class="c">→ lascia vuoto, premi Invio</span>
+Edit advanced config?  <span class="c">→</span> <span class="y">n</span>
+Use web browser to automatically authenticate rclone with remote?
+                       <span class="c">→</span> <span class="y">y</span>  <span class="c">si apre il browser: accedi con il tuo account e consenti l'accesso</span>
+Configure this as a Shared Drive?  <span class="c">→</span> <span class="y">n</span>
+Keep this "gdrive" remote?         <span class="c">→</span> <span class="y">y</span>
+e/n/d/r/c/s/q&gt;         <span class="c">→</span> <span class="y">q</span> <span class="c">per uscire</span></pre>
+<p>Torna in BKHD Backup e premi il pulsante di <b>aggiornamento</b> (la freccia circolare) accanto al campo del cloud:
+  comparirà <code>gdrive:</code>. La stessa procedura vale per gli altri servizi:</p>
+<table>
+  <tr><th>Servizio</th><th>Nome da scegliere in «Storage»</th><th>Note</th></tr>
+  <tr><td>Google Drive</td><td><code>drive</code></td><td>accesso tramite browser</td></tr>
+  <tr><td>Microsoft OneDrive</td><td><code>onedrive</code></td><td>accesso tramite browser, poi scegli «OneDrive Personal»</td></tr>
+  <tr><td>Dropbox</td><td><code>dropbox</code></td><td>accesso tramite browser</td></tr>
+  <tr><td>Mega</td><td><code>mega</code></td><td>email e password dell'account Mega</td></tr>
+  <tr><td>pCloud, Box, Yandex</td><td><code>pcloud</code>, <code>box</code>, <code>yandex</code></td><td>accesso tramite browser</td></tr>
+  <tr><td>Amazon S3, Wasabi, Cloudflare R2, MinIO</td><td><code>s3</code></td><td>chiave di accesso e chiave segreta</td></tr>
+  <tr><td>Backblaze B2</td><td><code>b2</code></td><td>Application Key ID e Application Key</td></tr>
+  <tr><td>Nextcloud / WebDAV</td><td><code>webdav</code></td><td>indirizzo del server, utente e password</td></tr>
+  <tr><td>Server o NAS via SSH</td><td><code>sftp</code></td><td>indirizzo, utente, password o chiave</td></tr>
+</table>
+<div class="box tip"><p><b>Backup cifrati:</b> per cifrare i pacchetti prima che lascino il PC, crea con
+  <code>rclone config</code> un secondo remote di tipo <code>crypt</code> che punta al primo (es. <code>gdrive:BKHD</code>)
+  e seleziona quello in BKHD Backup. Conserva la password di cifratura in un posto sicuro: senza, il backup non è
+  recuperabile.</p></div>
+
+<h2>Regolare la dimensione del testo (zoom)</h2>
+<div class="side">
+  <div>
+    <p>Se le scritte sono troppo piccole (o troppo grandi) puoi ingrandire tutta l'interfaccia dal menu
+      <b>☰</b>, sezione <b>Dimensione del testo</b>:</p>
+    <ul>
+      <li><b>lente con il −</b>: riduce (fino all'80%);</li>
+      <li><b>lente con il +</b>: ingrandisce (fino al 200%);</li>
+      <li>il pulsante con la <b>percentuale</b> torna alla dimensione normale (100%).</li>
+    </ul>
+    <p>Scorciatoie da tastiera: <kbd>Ctrl</kbd> + <kbd>+</kbd> ingrandisce, <kbd>Ctrl</kbd> + <kbd>−</kbd> riduce,
+      <kbd>Ctrl</kbd> + <kbd>0</kbd> ripristina. La dimensione scelta viene <b>ricordata</b> ai successivi avvii.</p>
+  </div>
+  {{FIG:11-zoom-menu|Il menu ☰ con lo zoom al 125%.|100}}
+</div>
+
+<h2>Tema «nuvola di giorno» e «nuvola di notte»</h2>
+<div class="side">
+  <div>
+    <p>Dal menu <b>☰ → Tema</b> scegli l'aspetto del programma:</p>
+    <ul>
+      <li><b>Automatico</b>: segue il tema del desktop (scuro → notte, chiaro → giorno);</li>
+      <li><b>☀ Nuvola di giorno</b>: cielo azzurro e schede bianche;</li>
+      <li><b>🌙 Nuvola di notte</b>: cielo blu notte con luna e stelle, schede scure e testi chiari, più riposante
+        per gli occhi la sera.</li>
+    </ul>
+    <p>Anche il tema scelto viene ricordato ai successivi avvii.</p>
+  </div>
+  {{FIG:16-tema-notte|Il tema «nuvola di notte».|100}}
+</div>
+
+<!-- ============================ 5 ============================ -->
+<h1><span class="num">5</span>Eseguire un backup</h1>
+<p>Nella scheda <b>Backup</b> scegli cosa copiare, dove e come, in tre passi. Nell'esempio una chiavetta USB da 16 GB
+  viene salvata su Google Drive in pacchetti da 2 GB.</p>
+{{FIG:02-backup-impostazioni|Passi 1 e 2: il disco da copiare e la destinazione.|70}}
+<ul class="legend">
+  <li><b class="n">1</b><b>Disco da copiare</b>: dischi e partizioni del PC con modello e dimensione. «[in uso]» indica
+    partizioni montate. Con <b>File immagine…</b> puoi salvare anche un file .img.</li>
+  <li><b class="n">2</b><b>Controlla disco…</b>: legge tutti i settori e lo stato SMART (capitolo 6).</li>
+  <li><b class="n">3</b><b>Destinazione</b>: <i>Cloud</i> (tramite la RAM) oppure <i>Disco o cartella locale</i>
+    (scrittura diretta, capitolo 6).</li>
+  <li><b class="n">4</b><b>Cloud</b>: il remote configurato (es. <code>gdrive:</code>).</li>
+  <li><b class="n">5</b><b>Disco/cartella</b>: per la destinazione locale, es. <code>/media/utente/DiscoEsterno</code>.</li>
+  <li><b class="n">6</b><b>Cartella</b> in cui raccogliere i backup (predefinita <code>BKHD</code>).</li>
+  <li><b class="n">7</b><b>Nome del backup</b>: proposto in automatico (PC-disco-data-ora); solo lettere, numeri, <code>. _ -</code></li>
+  <li><b class="n">8</b><b>Cerca backup interrotti</b>: elenca i backup da riprendere (capitolo 7).</li>
+</ul>
+
+<h2>Pacchetti e opzioni</h2>
+{{FIG:12-opzioni|Passo 3: dimensione dei pacchetti e opzioni (qui con «solo settori usati» e password attivi).|70}}
+<ul class="legend">
+  <li><b class="n">1</b><b>Dimensione dei pacchetti</b>: formati pronti dai floppy (1,2 / 1,44 / 2,88 MB) a 8 GB,
+    oppure scrivi i MB. Per i formati piccoli accanto compare la dimensione esatta in KB.</li>
+  <li><b class="n">2</b><b>RAM disponibile e necessaria</b> e numero di pacchetti: verde = OK, rosso = RAM
+    insufficiente, arancione = pacchetti troppo piccoli per quel disco.</li>
+  <li><b class="n">3</b><b>Compressione zstd</b>: consigliata, lo spazio vuoto occupa quasi zero. Livello 3 = miglior
+    compromesso velocità/spazio.</li>
+  <li><b class="n">4</b><b>Solo settori usati</b>: salta lo spazio libero dei file system (capitolo 6).</li>
+  <li><b class="n">5</b><b>Proteggi con password</b>: cifra il backup con AES-256 (capitolo 6).</li>
+  <li><b class="n">6</b>Password e conferma (almeno 8 caratteri).</li>
+  <li><b class="n">7</b><b>Settori danneggiati</b>: riprovare e copiare il possibile, oppure saltarli subito.</li>
+  <li><b class="n">8</b><b>Avvia backup</b>: verrà chiesta la password di amministratore.</li>
+</ul>
+
+<h2>Durante il backup</h2>
+{{FIG:03-backup-upload|Backup in corso: il pacchetto 1 di 8 è in caricamento sul cloud (parte inferiore della finestra).|80|ritaglia}}
+<ul class="legend">
+  <li><b class="n">1</b>Pacchetto corrente e fase: <i>lettura settori in RAM</i> oppure <i>upload</i>.</li>
+  <li><b class="n">2</b>Avanzamento del pacchetto corrente e velocità.</li>
+  <li><b class="n">3</b>Avanzamento totale del backup.</li>
+  <li><b class="n">4</b>Tempo trascorso e tempo stimato rimanente.</li>
+  <li><b class="n">5</b><b>Annulla</b>: interrompe in sicurezza; il backup potrà essere ripreso.</li>
+</ul>
+<div class="box warn"><p>Il PC <b>non va in sospensione</b> mentre il backup è in corso. Puoi continuare a usarlo, ma
+  per una copia perfettamente coerente evita di modificare file sul disco che stai copiando.</p></div>
+
+<h2>Fine del backup e registro attività</h2>
+<div class="side">
+  <div>
+    {{FIG:05-backup-completato|Messaggio di fine backup.|100}}
+    <p>Al termine compare un messaggio di conferma e una notifica sul desktop. Espandendo <b>Registro attività</b>
+      si vede la cronologia: per ogni pacchetto la quantità di dati letta, la dimensione compressa e la conferma
+      «salvato sul cloud e rimosso dalla RAM».</p>
+    <p>Eventuali <b>settori illeggibili</b> (disco danneggiato) vengono riletti più volte; se restano illeggibili sono
+      salvati come zeri e segnalati nel registro e nel manifest.</p>
+  </div>
+  {{FIG:04-backup-registro|Il registro attività al termine del backup.|100}}
+</div>
+
+<!-- ============================ 6 ============================ -->
+<h1><span class="num">6</span>Opzioni avanzate</h1>
+<h2>Salvare su un disco o una cartella locale</h2>
+<p>Scegli <b>Disco o cartella locale</b> come destinazione e indica la cartella (un disco esterno USB, un secondo disco
+  interno, un NAS montato). I pacchetti vengono <b>scritti direttamente</b> sulla destinazione, senza passare dalla RAM:
+  ogni pacchetto viene prima scritto con un nome provvisorio, sincronizzato sul disco e solo allora rinominato, quindi un
+  pacchetto incompleto non viene mai scambiato per uno valido.</p>
+<div class="box warn"><p>Per sicurezza il programma <b>rifiuta</b> di salvare il backup sullo stesso disco che sta copiando
+  (o, al ripristino, di leggere il backup dal disco che sta sovrascrivendo).</p></div>
+
+<h2>Copiare solo i settori usati</h2>
+<p>Con <b>Copia solo i settori usati</b> il programma legge prima la mappa dei blocchi occupati di ogni partizione e salta
+  lo spazio libero: un disco da 1 TB con 120 GB di dati richiede di leggere, caricare e (al ripristino) scrivere solo
+  circa 120 GB.</p>
+<table>
+  <tr><th>File system</th><th>Come viene analizzato</th></tr>
+  <tr><td>ext2, ext3, ext4 (Linux)</td><td>sempre, con <code>dumpe2fs</code> (presente in ogni Ubuntu)</td></tr>
+  <tr><td>NTFS, FAT, exFAT, Btrfs, XFS, HFS+, F2FS</td><td>con <b>partclone</b> (<code>sudo apt install partclone</code>)</td></tr>
+  <tr><td>swap</td><td>solo l'intestazione</td></tr>
+  <tr><td>partizioni montate, cifrate (LUKS), LVM, sconosciute</td><td>copiate per intero, per sicurezza</td></tr>
+  <tr><td>tabella delle partizioni, inizio e fine del disco</td><td>sempre copiati (MBR, GPT e GPT di riserva)</td></tr>
+</table>
+<p class="small">Al ripristino vengono scritti solo i settori usati: lo spazio libero del disco di destinazione non viene
+  sovrascritto (per il file system è indifferente). La mappa usata viene salvata nel backup (<code>usedmap.json</code>).</p>
+
+<h2>Proteggere il backup con una password</h2>
+<p>Con <b>Proteggi il backup con una password</b> ogni pacchetto viene <b>cifrato con AES-256-GCM</b> prima di lasciare
+  il PC. La chiave è ricavata dalla password con <b>scrypt</b>, un algoritmo volutamente lento che rende inefficaci i
+  tentativi di indovinarla a forza bruta.</p>
+<ul>
+  <li>La password <b>non viene salvata da nessuna parte</b> e non compare mai nell'elenco dei processi del sistema.</li>
+  <li>Ogni pacchetto ha un <b>sigillo di autenticità</b>: se qualcuno lo modifica o lo scambia con un altro, il
+    ripristino se ne accorge prima di scrivere qualsiasi byte sul disco.</li>
+  <li>Al ripristino, alla verifica e alla ripresa di un backup protetto la password viene richiesta.</li>
+</ul>
+<div class="box danger"><p><b>Se dimentichi la password il backup non è recuperabile</b>, da nessuno. Conservala in un
+  luogo sicuro (ad esempio un gestore di password).</p></div>
+<p class="small">Anche il manifest e gli indici di un backup protetto sono <b>firmati</b> con la chiave ricavata dalla
+  password: chi controlla il cloud non può alterarli né spacciare il backup per «non protetto» (il programma ricorda
+  quali backup erano protetti e blocca il ripristino se la protezione sparisce).</p>
+<p class="small">Restano in chiaro solo i dati descrittivi (nome del backup, dimensioni, disposizione delle partizioni):
+  il contenuto del disco è sempre cifrato.</p>
+
+<h2>Settori danneggiati e controllo del disco</h2>
+<div class="side">
+  <div>
+    <p>Il pulsante <b>Controlla disco…</b> legge tutti i settori del disco (senza modificare nulla) e lo stato
+      <b>SMART</b> (richiede <code>smartmontools</code>). Alla fine mostra quanti settori sono illeggibili e gli
+      indicatori di salute del disco.</p>
+    <p>Nel backup, l'opzione <b>Settori danneggiati</b> decide cosa fare con i settori illeggibili:</p>
+    <ul>
+      <li><b>Riprova e copia</b>: rilegge ogni settore fino a 5 volte e copia tutto ciò che riesce a leggere;</li>
+      <li><b>Salta subito</b>: un solo tentativo e salto rapido delle zone rovinate, per non affaticare un disco che sta
+        cedendo.</li>
+    </ul>
+    <p>In entrambi i casi i settori illeggibili vengono salvati come zeri ed elencati nel registro e nel manifest.</p>
+  </div>
+  {{FIG:14-controllo-disco|Risultato del controllo: due settori illeggibili.|100}}
+</div>
+<div class="box warn"><p>Un disco con settori illeggibili o con stato SMART negativo va <b>sostituito al più presto</b>:
+  fai subito il backup, preferibilmente con «Salta subito» se il disco peggiora a ogni lettura.</p></div>
+
+<h2>Come BKHD Backup protegge il sistema</h2>
+<ul>
+  <li>Le operazioni sui dischi richiedono la <b>password di amministratore ogni volta</b> (nessuna autorizzazione
+    ricordata per i minuti successivi).</li>
+  <li>Con il cloud i pacchetti stanno in una cartella in RAM <b>accessibile solo all'amministratore</b>; rclone, che gira
+    con il tuo utente, riceve e restituisce i dati come flusso senza mai toccare quei file.</li>
+  <li>Sui dischi locali il programma non segue mai collegamenti simbolici e i pacchetti scritti non possono essere
+    modificati da altri programmi; in ripristino ogni pacchetto viene verificato e scritto dallo <b>stesso file
+    aperto</b>, senza possibilità di scambi tra verifica e scrittura.</li>
+  <li>Ogni manifest e indice letto da una destinazione viene controllato (tipi, limiti, posizioni dei pacchetti):
+    un backup alterato non può far scrivere dati fuori posto.</li>
+  <li>La pennetta viene costruita in una cartella dell'amministratore, verificando le firme dei pacchetti Ubuntu e
+    l'impronta della chiave di Firefox.</li>
+</ul>
+
+<!-- ============================ 7 ============================ -->
+<h1><span class="num">7</span>Riprendere un backup interrotto</h1>
+<p>Se il backup si interrompe (pulsante <b>Annulla</b>, connessione caduta, PC spento, mancanza di corrente)
+  <b>i pacchetti già salvati restano validi</b>: il file di configurazione del backup sulla destinazione registra fin
+  dove si è arrivati.</p>
+{{FIG:13-interrotti|«Cerca backup interrotti»: l'elenco dei backup da riprendere.|72}}
+<ul class="legend">
+  <li><b class="n">1</b><b>Cerca backup interrotti</b> (accanto al nome): cerca nella destinazione scelta.</li>
+  <li><b class="n">2</b>Elenco: nome, data, disco originale, pacchetti salvati, protezione, opzioni.</li>
+  <li><b class="n">3</b>Stato del backup selezionato e disco originale riconosciuto (dal numero di serie).</li>
+  <li><b class="n">4</b><b>Riprendi backup interrotto</b>: imposta tutto da solo e prosegue la copia.</li>
+</ul>
+<ol class="steps">
+  <li>Scegli la stessa destinazione del backup interrotto e premi <b>Cerca backup interrotti</b>.</li>
+  <li>Seleziona il backup nell'elenco: il programma riconosce il disco originale (deve essere collegato).</li>
+  <li>Premi <b>Riprendi backup interrotto</b> (o fai doppio clic): nome, dimensione dei pacchetti, compressione e
+    opzioni vengono impostati automaticamente; per un backup protetto viene chiesta la password.</li>
+  <li>La copia riparte dal primo pacchetto mancante («Ripresa del backup interrotto dal pacchetto N»).</li>
+</ol>
+<div class="box tip"><p>Se un upload fallisce per un problema di rete, il programma <b>riprova da solo</b> fino a 10 volte,
+  con attese crescenti (15 s, 30 s, 1 min… fino a 5 min). Premendo <b>Annulla</b>, prima di fermarsi salva l'elenco dei
+  pacchetti completati, così la ripresa non ripete lavoro già fatto.</p></div>
+<div class="box warn"><p>Se esiste già un backup <b>completo</b> con lo stesso nome il programma rifiuta di sovrascriverlo:
+  scegli un nome diverso.</p></div>
+
+<!-- ============================ 8 ============================ -->
+<h1><span class="num">8</span>Ripristinare un backup</h1>
+<svg class="diagram" viewBox="0 0 720 150" xmlns="http://www.w3.org/2000/svg" font-family="Ubuntu, sans-serif">
+  <defs><marker id="br" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M0 0L10 5L0 10z" fill="#2e7d32"/></marker></defs>
+  <path d="M60 110 a28 28 0 0 1 3-55 a38 38 0 0 1 73-7 a30 30 0 0 1 32 29 a26 26 0 0 1-3 33 z" fill="#eaf3ff" stroke="#1f6fd6" stroke-width="2"/>
+  <text x="108" y="92" text-anchor="middle" font-size="14" font-weight="700" fill="#183a7a">Cloud</text>
+  <rect x="270" y="30" width="180" height="90" rx="12" fill="#fff4e5" stroke="#f08a1c" stroke-width="2"/>
+  <text x="360" y="55" text-anchor="middle" font-size="14" font-weight="700" fill="#183a7a">RAM</text>
+  <text x="360" y="75" text-anchor="middle" font-size="11" fill="#5d6878">pacchetto .bkhd</text>
+  <text x="360" y="95" text-anchor="middle" font-size="11" fill="#2e7d32" font-weight="700">✓ verifica SHA-256</text>
+  <rect x="545" y="30" width="165" height="90" rx="12" fill="#eef1f5" stroke="#9aa6b5" stroke-width="2"/>
+  <text x="627" y="62" text-anchor="middle" font-size="14" font-weight="700" fill="#183a7a">Disco</text>
+  <text x="627" y="82" text-anchor="middle" font-size="11" fill="#5d6878">scritto nella</text>
+  <text x="627" y="97" text-anchor="middle" font-size="11" fill="#5d6878">posizione esatta</text>
+  <line x1="178" y1="75" x2="265" y2="75" stroke="#2e7d32" stroke-width="3" marker-end="url(#br)"/>
+  <text x="221" y="66" text-anchor="middle" font-size="11" fill="#2e7d32">download</text>
+  <line x1="454" y1="75" x2="540" y2="75" stroke="#2e7d32" stroke-width="3" marker-end="url(#br)"/>
+  <text x="497" y="66" text-anchor="middle" font-size="11" fill="#2e7d32">scrittura</text>
+  <text x="360" y="143" text-anchor="middle" font-size="11" fill="#5d6878">poi la RAM viene svuotata e si passa al pacchetto successivo</text>
+</svg>
+{{FIG:06-ripristino|La scheda Ripristino con l’elenco dei backup trovati sul cloud.|62}}
+<ul class="legend">
+  <li><b class="n">1</b>Origine: cloud oppure disco/cartella locale.</li>
+  <li><b class="n">2</b><b>Cerca backup</b>: elenca i backup nella cartella indicata.</li>
+  <li><b class="n">3</b>Elenco: nome, data, disco originale, dimensione, pacchetti, spazio sul cloud, stato.</li>
+  <li><b class="n">4</b>Dettagli del backup selezionato (PC, disco, settore, tabella partizioni, compressione,
+    solo settori usati, protezione). Per i backup protetti (🔒) compare il campo <b>Password</b>.</li>
+  <li><b class="n">5</b>Ripristino su un <b>disco</b>: vengono proposti solo dischi interi.</li>
+  <li><b class="n">6</b>Ripristino su un <b>file immagine</b> (.img), utile per estrarre file o usarlo in una macchina virtuale.</li>
+  <li><b class="n">7</b><b>Solo verifica integrità</b>: scarica e controlla senza scrivere nulla (capitolo 9).</li>
+  <li><b class="n">8</b><b>Avvia ripristino</b>: attivo solo se la destinazione è valida.</li>
+</ul>
+
+<h2>Conferma di sicurezza</h2>
+<div class="side">
+  <div>
+    <p>Il ripristino su disco <b>cancella tutto il contenuto</b> del disco di destinazione. Per evitare errori, il
+      pulsante di conferma si attiva solo dopo aver <b>scritto il nome del dispositivo</b> (es. <code>sdc</code>).</p>
+    <p>Inoltre il programma <b>rifiuta</b> automaticamente:</p>
+    <ul>
+      <li>dischi con partizioni montate, in uso come swap, LVM, RAID o cifratura;</li>
+      <li>dischi più piccoli del disco originale;</li>
+      <li>pacchetti danneggiati o manomessi: ogni pacchetto viene verificato con SHA-256 (e, se protetto, con il
+        sigillo AES-GCM) prima di essere scritto e, se non corrisponde, viene riscaricato fino a 3 volte.</li>
+    </ul>
+  </div>
+  {{FIG:07-ripristino-conferma|Per confermare bisogna scrivere il nome del disco.|100}}
+</div>
+<div class="box danger"><p>Controlla con attenzione <b>modello e dimensione</b> del disco di destinazione prima di
+  confermare. Un ripristino interrotto lascia il disco parzialmente scritto e non utilizzabile fino a un nuovo
+  ripristino completo.</p></div>
+<h2>Dopo il ripristino</h2>
+<ul>
+  <li>La tabella delle partizioni viene ricaricata automaticamente; se il sistema non la vede, riavvia il PC.</li>
+  <li>Se il disco di destinazione è <b>più grande</b> dell'originale, lo spazio in più resta non allocato. Con tabella GPT
+    puoi spostare l'intestazione di riserva alla fine del disco con <code>sudo sgdisk -e /dev/sdX</code> e poi
+    ingrandire le partizioni con <b>GParted</b>.</li>
+</ul>
+
+<!-- ============================ 9 ============================ -->
+<h1><span class="num">9</span>Verificare l'integrità di un backup</h1>
+<p>Un backup è utile solo se si può ripristinare. Con <b>Solo verifica integrità</b> il programma scarica ogni pacchetto
+  in RAM, ne controlla l'intestazione e il codice SHA-256, decomprime i dati e li confronta con il codice
+  dell'originale — <b>senza scrivere nulla</b> su disco.</p>
+{{FIG:08-verifica-in-corso|Verifica in corso: download del pacchetto 1 di 8 in RAM.|72}}
+{{FIG:09-verifica-completata|Esito positivo: tutti i pacchetti sono integri.|62}}
+<div class="box tip"><p>Esegui una verifica dopo ogni backup importante e, periodicamente, sui backup più vecchi.</p></div>
+
+<!-- ============================ 10 ============================ -->
+<h1><span class="num">10</span>Pennetta e DVD BKHD Live</h1>
+<p>Copiare il disco da cui è avviato il PC mentre è in uso è possibile, ma i file modificati durante la copia
+  potrebbero risultare incoerenti; il <b>ripristino</b> del disco di sistema è possibile solo dall'esterno. Per questo
+  BKHD Backup crea una <b>chiavetta USB avviabile</b>: <b>BKHD Live</b>, un Ubuntu 24.04 minimale in italiano con:</p>
+<div class="side">
+  <ul>
+    <li><b>BKHD Backup</b>, che si apre da solo all'avvio;</li>
+    <li><b>Firefox</b> (browser predefinito, anche per leggere questa guida);</li>
+    <li>rete <b>via cavo e Wi-Fi</b> (icona in alto a destra) con il firmware delle schede più diffuse;</li>
+    <li><b>Diagnosi rapida</b>: rete, Internet, Secure Boot, dischi e memoria in un colpo d'occhio;</li>
+  </ul>
+  <ul>
+    <li>dischi: <b>GParted</b>, <b>Dischi</b>, <b>GSmartControl</b>, smartctl, nvme-cli, hdparm;</li>
+    <li>recupero dati: <b>TestDisk/PhotoRec</b>, <b>ddrescue</b>;</li>
+    <li>hardware: lshw, inxi, stress-ng, memtester, iperf3, mtr;</li>
+    <li><b>Memtest86+</b> nel menu di avvio, per il test della RAM.</li>
+  </ul>
+</div>
+<p>Si avvia su PC con <b>BIOS</b> e con <b>UEFI</b>, anche con <b>Secure Boot attivo</b> (usa i componenti di avvio
+  firmati da Canonical, come Ubuntu).</p>
+{{FIG:15-pennetta|La scheda «Pennetta e DVD»: l'immagine e la pennetta USB.|72}}
+<ul class="legend">
+  <li><b class="n">1</b>L'immagine BKHD Live: quella <b>inclusa nel programma</b> (non serve scaricare nulla) oppure
+    un'altra scelta con <b>Scegli…</b>. Nelle opzioni avanzate si può creare un'immagine aggiornata.</li>
+  <li><b class="n">2</b><b>Salva immagine ISO…</b>: copia l'immagine dove vuoi (macchina virtuale, Ventoy, un altro PC,
+    masterizzazione successiva), con il file di controllo <code>.sha256</code>.</li>
+  <li><b class="n">3</b>La chiavetta USB (sono elencati solo dischi USB o rimovibili; serve almeno 2 GB) e il pulsante
+    <b>Espelli</b> per toglierla in sicurezza.</li>
+  <li><b class="n">4</b>Il contenuto attuale della chiavetta, per controllare di aver scelto quella giusta.</li>
+  <li><b class="n">5</b><b>Facoltativo</b>: usa anche lo spazio rimanente per salvare i backup (partizione
+    <b>BKHD-DATI</b>, exFAT o ext4). Normalmente la pennetta contiene solo il sistema live.</li>
+  <li><b class="n">6</b><b>Crea pennetta BKHD Live</b>: cancella la chiavetta, scrive l'immagine e la <b>rilegge per
+    verificarla</b>.</li>
+</ul>
+<div class="box tip"><p>Con la partizione <b>BKHD-DATI</b>, avviando BKHD Live la partizione viene montata da sola e
+  proposta come destinazione dei backup: basta scegliere il disco da copiare e premere <b>Avvia backup</b>.</p></div>
+
+<h2>Formattare una chiavetta per i backup e masterizzare un DVD</h2>
+{{FIG:17-formatta-dvd|Formattazione della chiavetta per i soli backup e DVD avviabile.|72}}
+<ul class="legend">
+  <li><b class="n">1</b>Formato: <b>exFAT</b> (consigliato, leggibile da Windows, macOS e Linux, file oltre 4 GB),
+    <b>ext4</b> (solo Linux, il più sicuro con BKHD), <b>FAT32</b> (file fino a 4 GB) o <b>NTFS</b>.</li>
+  <li><b class="n">2</b>Etichetta della chiavetta (fino a 11 caratteri).</li>
+  <li><b class="n">3</b><b>Usa come destinazione dei backup</b>: monta la chiavetta e la imposta nella scheda Backup.</li>
+  <li><b class="n">4</b><b>Formatta</b>: cancella tutto e crea un'unica partizione nel formato scelto.</li>
+  <li><b class="n">5</b>Il masterizzatore CD/DVD.</li>
+  <li><b class="n">6</b><b>Masterizza DVD</b>: scrive l'immagine e rilegge il disco per verificarlo. Serve un
+    <b>DVD</b> (4,7 GB): l'immagine (circa 1,3 GB) <b>non entra in un CD</b> da 700 MB.</li>
+</ul>
+<h2>Avviare il PC dalla pennetta</h2>
+<ol class="steps">
+  <li>Inserisci la chiavetta (o il DVD) e accendi (o riavvia) il PC.</li>
+  <li>Apri il <b>menu di avvio</b> premendo subito F12, F11, F8 o Esc (dipende dal produttore) e scegli la chiavetta.</li>
+  <li>Nel menu di BKHD Live scegli <b>avvia</b> (dopo 10 secondi parte da solo). Se lo schermo resta nero usa la
+    <b>modalità sicura</b>; con «carica tutto in RAM» la chiavetta si può togliere dopo l'avvio.</li>
+  <li>Sul desktop si apre BKHD Backup. Collega la rete (cavo, oppure Wi-Fi dall'icona in alto a destra), poi
+    <b>Configura cloud…</b> (nella sessione live va rifatto ogni volta) e procedi con backup o ripristino.</li>
+</ol>
+<div class="side">
+  {{FIG:live-1-menu|Il menu di avvio di BKHD Live.|100}}
+  {{FIG:live-2-desktop|Il desktop di BKHD Live con BKHD Backup aperto.|100}}
+</div>
+{{FIG:live-3-diagnosi|«Diagnosi rapida» su un PC UEFI con Secure Boot attivo.|70}}
+<div class="box warn"><p>Nella sessione live la RAM è condivisa con il sistema stesso: con 8 GB di RAM scegli pacchetti
+  da 2–4 GB, oppure salva su un disco esterno (nessun limite di RAM).</p></div>
+
+<!-- ============================ 11 ============================ -->
+<h1><span class="num">11</span>Uso da riga di comando</h1>
+<p>Il motore <code>bkhd-engine</code> funziona anche senza interfaccia grafica, ad esempio su server o in script
+  pianificati. Va eseguito con <code>sudo</code>; rclone viene eseguito con l'utente che ha lanciato sudo, quindi usa
+  la sua configurazione cloud.</p>
+<pre><span class="c"># backup di /dev/sda su Google Drive, pacchetti da 8 GB, compressi</span>
+<span class="y">sudo bkhd-engine backup --source /dev/sda --remote gdrive: --path BKHD --name server-sda \
+     --chunk-size-mib 8192 --compression zstd</span>
+
+<span class="c"># chiavetta da 16 GB in pacchetti "floppy" da 1,44 MB</span>
+<span class="y">sudo bkhd-engine backup --source /dev/sdb --remote gdrive: --path BKHD --name chiavetta \
+     --chunk-size 1440K --compression zstd</span>
+
+<span class="c"># disco esterno, solo settori usati, protetto da password (la chiede sul terminale)</span>
+<span class="y">sudo bkhd-engine backup --source /dev/sda --remote /media/utente/Esterno --name portatile \
+     --used-only --encrypt --compression zstd</span>
+
+<span class="c"># controllo dei settori e dello stato SMART</span>
+<span class="y">sudo bkhd-engine scan --source /dev/sda</span>
+
+<span class="c"># pennetta avviabile: crea l'immagine e la scrive su /dev/sdc (chiavetta USB)</span>
+<span class="y">sudo bkhd-engine live-build --output ~/BKHD-Live/bkhd-live.iso</span>
+<span class="y">sudo bkhd-engine live-write --image ~/BKHD-Live/bkhd-live.iso --target /dev/sdc --yes</span>
+
+<span class="c"># pennetta live con spazio per i backup, chiavetta solo per i backup, DVD</span>
+<span class="y">sudo bkhd-engine live-write --image /usr/share/bkhd-backup/live/bkhd-live-{{VERSION}}.iso --target /dev/sdc \
+     --yes --data-fs exfat</span>
+<span class="y">sudo bkhd-engine usb-format --target /dev/sdc --fs exfat --label BKHD-DATI --yes</span>
+<span class="y">sudo bkhd-engine disc-burn --image /usr/share/bkhd-backup/live/bkhd-live-{{VERSION}}.iso --device /dev/sr0 --yes</span>
+
+<span class="c"># riprende un backup interrotto</span>
+<span class="y">sudo bkhd-engine backup --source /dev/sda --remote gdrive: --path BKHD --name server-sda \
+     --chunk-size-mib 8192 --compression zstd --resume</span>
+
+<span class="c"># elenca i backup presenti</span>
+<span class="y">bkhd-engine list --remote gdrive: --path BKHD</span>
+
+<span class="c"># verifica integrità</span>
+<span class="y">sudo bkhd-engine restore --remote gdrive: --path BKHD/server-sda --verify-only</span>
+
+<span class="c"># ripristino su /dev/sdb (cancella /dev/sdb!)</span>
+<span class="y">sudo bkhd-engine restore --remote gdrive: --path BKHD/server-sda --target /dev/sdb --yes</span></pre>
+<table>
+  <tr><th style="width:34%">Opzione</th><th>Significato</th></tr>
+  <tr><td><code>--chunk-size N</code></td><td>dimensione dei pacchetti con unità: <code>1200K</code>, <code>1440K</code>,
+    <code>2880K</code> (floppy), <code>50M</code>, <code>100M</code>, <code>650M</code>, <code>4G</code>, <code>8G</code>…
+    da 1,2 MB a 8 GB (predefinito 4 GB)</td></tr>
+  <tr><td><code>--chunk-size-kib N</code> / <code>--chunk-size-mib N</code></td><td>la stessa dimensione espressa in KB o in MB</td></tr>
+  <tr><td><code>--compression zstd --level N</code></td><td>compressione zstd, livello 1–19 (predefinito 3)</td></tr>
+  <tr><td><code>--remote /percorso</code></td><td>destinazione locale (percorso assoluto) invece di un cloud</td></tr>
+  <tr><td><code>--used-only</code></td><td>copia solo i settori usati dai file system</td></tr>
+  <tr><td><code>--encrypt</code> / <code>--password-stdin</code></td><td>protezione con password (chiesta sul terminale
+    o letta dalla prima riga dello standard input)</td></tr>
+  <tr><td><code>--bad-sectors retry|skip</code></td><td>settori illeggibili: riprova e copia (predefinito) o salta subito</td></tr>
+  <tr><td><code>list --interrupted</code></td><td>elenca solo i backup interrotti</td></tr>
+  <tr><td><code>--resume</code></td><td>riprende un backup interrotto con lo stesso nome</td></tr>
+  <tr><td><code>--overwrite</code></td><td>sovrascrive un backup esistente con lo stesso nome</td></tr>
+  <tr><td><code>--from-chunk N</code></td><td>riprende un ripristino interrotto dal pacchetto N</td></tr>
+  <tr><td><code>--allow-incomplete</code></td><td>ripristina anche un backup interrotto (solo i pacchetti presenti)</td></tr>
+  <tr><td><code>--retries N</code></td><td>tentativi per ogni trasferimento (predefinito 10)</td></tr>
+  <tr><td><code>--rclone-config FILE</code></td><td>usa un file di configurazione rclone specifico</td></tr>
+  <tr><td><code>--json</code></td><td>avanzamento in formato JSON (usato dall'interfaccia grafica)</td></tr>
+</table>
+
+<!-- ============================ 12 ============================ -->
+<h1><span class="num">12</span>Formato dei file</h1>
+<p>Ogni backup è una cartella sul cloud: <code>&lt;cartella&gt;/&lt;nome-backup&gt;/</code>.</p>
+<pre>gdrive:BKHD/
+└── pc-casa-sdb-20261011-2015/
+    ├── <span class="g">manifest.json</span>                              <span class="c">descrizione del backup</span>
+    ├── <span class="g">index/</span>
+    │   └── <span class="g">index-00000.json</span>                       <span class="c">dati dei pacchetti 1–1000</span>
+    ├── <span class="y">pc-casa-sdb-20261011-2015.part00001.bkhd</span>   <span class="c">settori da 0 a 2 GB</span>
+    ├── <span class="y">pc-casa-sdb-20261011-2015.part00002.bkhd</span>   <span class="c">settori da 2 a 4 GB</span>
+    ├── …
+    └── <span class="y">pc-casa-sdb-20261011-2015.part00008.bkhd</span>   <span class="c">ultimi settori</span></pre>
+<p>Con l'opzione «solo settori usati» c'è anche <code>usedmap.json</code> (le zone del disco copiate); i pacchetti fatti
+  solo di spazio libero non vengono nemmeno creati. Nei backup protetti da password il manifest contiene i parametri
+  di cifratura (sale e costo di scrypt, un controllo della password) ma <b>mai la password</b>.</p>
+<p>Con più di <b>10.000 pacchetti</b> (tipico dei formati floppy) i pacchetti vengono divisi in sottocartelle da
+  1000 — <code>g00000/</code>, <code>g00001/</code>, … — perché molti servizi cloud rallentano o rifiutano cartelle con
+  troppi file. Il numero nel nome del pacchetto ha tante cifre quante ne servono (es. <code>part000001</code>).</p>
+<div class="side">
+  <div>
+    <h2 style="margin-top:0">manifest.json e index/</h2>
+    <ul>
+      <li><b>manifest.json</b>: stato (<i>in corso</i> / <i>completo</i>), date, nome del PC, disco di origine
+        (percorso, modello, numero di serie, dimensione, settore, <b>copia della tabella delle partizioni</b>),
+        dimensione dei pacchetti, compressione, numero di pacchetti salvati;</li>
+      <li><b>index/index-NNNNN.json</b>: per ogni gruppo di 1000 pacchetti, dimensione sul cloud, codici SHA-256 dei
+        dati originali e del file, settori illeggibili.</li>
+    </ul>
+    <p class="small">Dividere l'indice in gruppi mantiene piccoli i file da aggiornare anche con centinaia di migliaia di
+      pacchetti. I backup creati con la versione 1.0 (indice dentro il manifest) restano leggibili e, se interrotti,
+      vengono convertiti automaticamente alla ripresa.</p>
+  </div>
+  <div>
+    <h2 style="margin-top:0">Pacchetto .bkhd</h2>
+    <table>
+      <tr><th>Byte</th><th>Contenuto</th></tr>
+      <tr><td>0 – 5</td><td>firma <code>BKHD\x01\n</code></td></tr>
+      <tr><td>6 – 4095</td><td>intestazione JSON: identificativo del backup, numero del pacchetto, posizione,
+        lunghezza, codici SHA-256, compressione</td></tr>
+      <tr><td>4096 – fine</td><td>i settori del disco, grezzi oppure compressi con zstd, ed eventualmente cifrati
+        con AES-256-GCM; con «solo settori usati» i dati sono preceduti dalla tabella delle zone copiate</td></tr>
+    </table>
+    <p class="small">Ogni pacchetto è autodescrittivo: anche senza manifest e indice si può sapere a quale backup e a
+      quale posizione del disco appartiene.</p>
+  </div>
+</div>
+<div class="box warn"><p>Non rinominare, spostare o modificare i file dentro la cartella di un backup: il ripristino li
+  riconosce dal nome e ne verifica il contenuto.</p></div>
+
+<!-- ============================ 13 ============================ -->
+<h1><span class="num">13</span>Risoluzione dei problemi</h1>
+<table>
+  <tr><th style="width:36%">Problema</th><th>Soluzione</th></tr>
+  <tr><td>«rclone non è installato»</td><td><code>sudo apt install rclone</code>, poi riavvia BKHD Backup.</td></tr>
+  <tr><td>«Nessun cloud configurato» oppure il cloud non compare nell'elenco</td><td>Premi <b>Configura cloud…</b> (capitolo 4),
+    poi il pulsante di aggiornamento accanto al campo del cloud.</td></tr>
+  <tr><td>«RAM insufficiente» (scritta rossa)</td><td>Scegli pacchetti più piccoli o chiudi programmi pesanti
+    (browser, macchine virtuali).</td></tr>
+  <tr><td>«Autorizzazione non concessa»</td><td>È stata annullata la richiesta della password: riprova e inserisci la
+    password del tuo utente (deve essere amministratore).</td></tr>
+  <tr><td>«Esiste già un backup completo chiamato…»</td><td>Cambia il nome del backup.</td></tr>
+  <tr><td>«Esiste un backup interrotto chiamato…»</td><td>Spunta <b>Riprendi</b> per continuarlo, oppure cambia nome.</td></tr>
+  <tr><td>«Il backup interrotto non corrisponde»</td><td>Per riprendere servono stesso disco, stessa dimensione dei
+    pacchetti e stessa compressione.</td></tr>
+  <tr><td>Upload fallito dopo vari tentativi</td><td>Controlla la connessione e lo spazio libero sul cloud, poi riprendi
+    il backup. Nel registro attività trovi il messaggio di errore di rclone.</td></tr>
+  <tr><td>Token scaduto / accesso al cloud negato</td><td>Rifai l'accesso: in un terminale <code>rclone config reconnect gdrive:</code></td></tr>
+  <tr><td>«La destinazione è in uso»</td><td>Smonta le partizioni del disco (dall'app <b>Dischi</b> o con
+    <code>sudo umount /dev/sdX1</code>) oppure lavora da chiavetta live.</td></tr>
+  <tr><td>«Il pacchetto … sul cloud è danneggiato»</td><td>Il file sul cloud non corrisponde al codice SHA-256 originale:
+    quella parte del disco non è recuperabile da questo backup. Esegui un nuovo backup.</td></tr>
+  <tr><td>Avviso arancione «Pacchetti molto piccoli per questo disco»</td><td>Hai scelto un formato floppy (o comunque
+    piccolo) per un disco grande: verrebbero creati centinaia di migliaia di file. Scegli 650 MB o più, oppure usa i
+    formati piccoli solo per partizioni e chiavette piccole.</td></tr>
+  <tr><td>Il cloud segnala troppi file o rallenta molto</td><td>Usa pacchetti più grandi. Sopra i 10.000 pacchetti il
+    programma usa già sottocartelle da 1000 file.</td></tr>
+  <tr><td>Scritte troppo piccole o troppo grandi</td><td>Menu <b>☰ → Dimensione del testo</b>, oppure
+    <kbd>Ctrl</kbd> + <kbd>+</kbd> / <kbd>Ctrl</kbd> + <kbd>−</kbd> / <kbd>Ctrl</kbd> + <kbd>0</kbd>.</td></tr>
+  <tr><td>«Password errata»</td><td>Controlla maiuscole/minuscole e la tastiera (in BKHD Live è italiana). Senza la
+    password giusta il backup protetto non è recuperabile.</td></tr>
+  <tr><td>«…si trova sullo stesso disco di…»</td><td>Hai scelto come destinazione locale una cartella sul disco che stai
+    copiando (o ripristinando): scegli un altro disco.</td></tr>
+  <tr><td>Partizione «copiata per intero (installa partclone)»</td><td>Per saltare lo spazio libero di NTFS, FAT, exFAT,
+    Btrfs o XFS installa partclone: <code>sudo apt install partclone</code>.</td></tr>
+  <tr><td>Il PC non si avvia dalla pennetta</td><td>Scegli la chiavetta dal menu di avvio (F12/F11/F8/Esc). Su PC molto
+    vecchi abilita l'avvio USB nel BIOS; se lo schermo resta nero usa la «modalità sicura».</td></tr>
+  <tr><td>BKHD Live: niente Internet</td><td>Apri «Diagnosi rapida» sul desktop: indica se la rete è collegata.
+    Per il Wi-Fi scegli la rete dall'icona in alto a destra.</td></tr>
+  <tr><td>Backup molto lento</td><td>Di solito dipende dalla velocità di upload della connessione. Attiva la
+    compressione zstd: le zone vuote del disco non vengono praticamente trasferite.</td></tr>
+</table>
+
+<!-- ============================ 14 ============================ -->
+<h1><span class="num">14</span>Informazioni, autore e licenza</h1>
+<div class="side">
+  <div>
+    <table>
+      <tr><th colspan="2">BKHD Backup</th></tr>
+      <tr><td>Versione</td><td>{{VERSION}}</td></tr>
+      <tr><td>Autore</td><td>fabionet</td></tr>
+      <tr><td>Contatto</td><td>fabionet666@gmail.com</td></tr>
+      <tr><td>Copyright</td><td>© 2026 fabionet</td></tr>
+      <tr><td>Licenza</td><td>GNU General Public License versione 3 o successiva (GPL-3.0-or-later)</td></tr>
+      <tr><td>Piattaforme</td><td>Ubuntu, Debian e derivate</td></tr>
+      <tr><td>Linguaggio</td><td>Python 3, interfaccia GTK 3</td></tr>
+    </table>
+    <p>Le stesse informazioni sono visibili nel programma dal menu <b>☰ → Informazioni su BKHD Backup</b>; dallo
+      stesso menu si apre questa guida.</p>
+  </div>
+  {{FIG:10-informazioni|La finestra «Informazioni» del programma.|100}}
+</div>
+<h2>Licenza</h2>
+<p>BKHD Backup è <b>software libero</b>: puoi redistribuirlo e/o modificarlo secondo i termini della
+  <b>GNU General Public License</b> pubblicata dalla Free Software Foundation, versione 3 della licenza o (a tua scelta)
+  qualsiasi versione successiva. In sintesi:</p>
+<ul>
+  <li>puoi <b>usare</b> il programma per qualsiasi scopo, anche commerciale;</li>
+  <li>puoi <b>studiarlo e modificarlo</b>: il codice sorgente è incluso;</li>
+  <li>puoi <b>ridistribuirlo</b>, anche modificato, purché con la stessa licenza, il codice sorgente e
+    l'indicazione dell'autore originale.</li>
+</ul>
+<p>Il programma è distribuito nella speranza che sia utile, ma <b>SENZA ALCUNA GARANZIA</b>, nemmeno quella implicita di
+  commerciabilità o di idoneità a uno scopo particolare. Il testo completo della licenza è nel file <code>LICENSE</code>
+  e, sui sistemi Debian/Ubuntu, in <code>/usr/share/common-licenses/GPL-3</code>, oppure su
+  <code>www.gnu.org/licenses/gpl-3.0.html</code>.</p>
+<h2>Componenti di terze parti</h2>
+<table>
+  <tr><th>Componente</th><th>Uso</th><th>Licenza</th></tr>
+  <tr><td>rclone — rclone.org</td><td>trasferimento da e verso il cloud</td><td>MIT</td></tr>
+  <tr><td>Zstandard (zstd)</td><td>compressione dei pacchetti</td><td>BSD / GPL-2.0</td></tr>
+  <tr><td>GTK 3 e PyGObject</td><td>interfaccia grafica</td><td>LGPL-2.1+</td></tr>
+  <tr><td>Python 3</td><td>linguaggio del programma</td><td>PSF License</td></tr>
+  <tr><td>polkit / pkexec</td><td>richiesta dei permessi di amministratore</td><td>LGPL-2.0+</td></tr>
+  <tr><td>cryptography (Python)</td><td>cifratura AES-256-GCM</td><td>Apache-2.0 / BSD</td></tr>
+  <tr><td>partclone, e2fsprogs</td><td>mappa dei settori usati</td><td>GPL-2.0</td></tr>
+  <tr><td>smartmontools</td><td>stato SMART dei dischi</td><td>GPL-2.0</td></tr>
+  <tr><td>Ubuntu, Firefox e strumenti di BKHD Live</td><td>sistema della pennetta avviabile</td><td>licenze dei
+    rispettivi progetti</td></tr>
+</table>
+<p class="small">Questi componenti non sono inclusi nel pacchetto: vengono installati dai repository della distribuzione
+  (per BKHD Live vengono scaricati dai server ufficiali di Ubuntu e Mozilla al momento della creazione).</p>
+
+</body>
+</html>

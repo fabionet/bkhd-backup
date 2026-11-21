@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE policyconfig PUBLIC "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
+ "http://www.freedesktop.org/standards/PolicyKit/1/policyconfig.dtd">
+<policyconfig>
+  <vendor>BKHD Backup</vendor>
+  <action id="org.bkhd.backup.engine">
+    <description>Run BKHD Backup disk engine</description>
+    <description xml:lang="it">Esegui il motore di backup/ripristino del disco</description>
+    <message>Authentication is required to read or write a whole disk</message>
+    <message xml:lang="it">Per leggere o scrivere un intero disco è richiesta la password di amministratore</message>
+    <icon_name>bkhd-backup</icon_name>
+    <defaults>
+      <allow_any>auth_admin</allow_any>
+      <allow_inactive>auth_admin</allow_inactive>
+      <allow_active>auth_admin</allow_active>
+    </defaults>
+    <annotate key="org.freedesktop.policykit.exec.path">/usr/lib/bkhd-backup/bkhd_engine.py</annotate>
+  </action>
+</policyconfig>

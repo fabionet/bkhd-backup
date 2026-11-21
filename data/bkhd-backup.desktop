@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=BKHD Backup
+GenericName=Backup del disco sul cloud
+Comment=Copia l'intero disco settore per settore direttamente sul cloud e lo ripristina
+Exec=bkhd-backup
+Icon=bkhd-backup
+Terminal=false
+Categories=System;Archiving;
+Keywords=backup;disco;cloud;clone;immagine;ripristino;restore;
+StartupWMClass=bkhd-backup

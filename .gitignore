@@ -1,0 +1,7 @@
+# pacchetti e immagini: si pubblicano nelle release di GitHub, non nel repository
+dist/
+*.deb
+*.iso
+*.iso.sha256
+__pycache__/
+*.pyc
