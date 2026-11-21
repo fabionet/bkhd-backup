@@ -1,0 +1,23 @@
+rclone.exe per la versione a 32 bit (CPU con solo SSE)
+=====================================================
+
+L'rclone ufficiale per Windows a 32 bit richiede un processore con SSE2 e Windows 10. Questo
+rclone.exe e' compilato apposta per BKHD Backup in modo da funzionare su processori con solo
+MMX + SSE (Pentium III, Athlon XP) e su Windows 7:
+
+  rclone v1.67.0 (ultima versione compilabile con Go 1.20, l'ultimo Go che supporta Windows 7)
+  Go 1.20.14, GOOS=windows GOARCH=386 GO386=softfloat CGO_ENABLED=0
+  go build -trimpath -ldflags "-w -X github.com/rclone/rclone/fs.Version=v1.67.0-bkhd-sse"
+  SHA-256 di rclone.exe: @SHA256@
+
+Controllo delle istruzioni (disassemblato completo con go tool objdump): solo 10 funzioni contengono
+istruzioni SSE2 o successive e nessuna viene eseguita su una CPU senza SSE2:
+  - runtime.memclrNoHeapPointers, memeqbody, cmpbody: con GO386=softfloat il codice SSE2 e' saltato
+    sempre (salto fisso inserito dal compilatore);
+  - runtime.memmove, runtime.cputicks: usano SSE2 solo se la CPU dichiara di averlo (CPUID);
+  - aeshashbody, runtime.memhash32, runtime.memhash64: solo con CPU dotate di AES-NI e SSE4.1;
+  - blake2s.hashBlocksSSE2/SSSE3: scelte solo se la CPU dichiara SSE2/SSSE3.
+Prova di funzionamento: rclone (stessa compilazione, per Linux a 32 bit) avviato in QEMU con CPU
+Pentium III senza SSE2: rcat e cat di 24 MB con dati identici.
+
+Licenza di rclone: MIT (licenses/rclone-COPYING.txt). Sorgenti: https://github.com/rclone/rclone

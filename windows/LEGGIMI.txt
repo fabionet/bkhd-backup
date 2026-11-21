@@ -1,0 +1,45 @@
+BKHD Backup per Windows 1.0.0 beta 1 (anteprima)
+================================================
+
+Backup settore per settore di interi dischi direttamente sul cloud (tramite rclone, un pacchetto
+alla volta in RAM, nessuna cache su disco) oppure su un disco o una cartella di rete, con ripristino.
+I backup sono identici a quelli di BKHD Backup per Linux e della pennetta BKHD Live: un backup fatto
+su Windows si ripristina dalla pennetta e viceversa.
+
+QUALE VERSIONE SCARICARE
+- bkhd-backup-windows-...-x64.zip : Windows 10 e 11 a 64 bit.
+- bkhd-backup-windows-...-x86-sse.zip : PC a 32 bit con processore Pentium III / Athlon XP o
+  successivi (bastano MMX e SSE, NON serve SSE2), Windows XP SP3 e Windows 7.
+  * Windows 7: cloud e disco/cartella.
+  * Windows XP: solo disco o cartella di rete (rclone e i cloud moderni non funzionano su XP).
+  * Pacchetti sul cloud fino a 700 MB (limite della memoria a 32 bit); su disco fino a 8 GB.
+
+COME SI USA
+1. Estrai lo zip in una cartella (es. C:\BKHD). rclone.exe deve restare accanto a bkhd-backup.exe.
+2. Avvia bkhd-backup.exe (Windows chiede i permessi di amministratore: servono per leggere i dischi).
+3. Scheda «Backup»: scegli il disco, la destinazione (cloud oppure disco/cartella), il nome, la
+   dimensione dei pacchetti e le opzioni (compressione zstd, password, settori illeggibili), poi
+   «Avvia backup». Il primo collegamento al cloud si fa con «Configura cloud…».
+4. Scheda «Ripristino»: «Cerca backup», scegli il backup, la destinazione (disco o file immagine)
+   oppure «Solo verifica integrità», poi «Avvia ripristino».
+5. Un backup interrotto si riprende con «Cerca backup interrotti» e «Riprendi».
+
+Riga di comando: bkhd-cli.exe --help (stessi comandi di bkhd-engine su Linux).
+
+LIMITI DI QUESTA ANTEPRIMA
+- Collaudata con Wine (Windows 10 simulato) e con prove automatiche di compatibilita' con Linux;
+  NON ancora provata su un PC Windows reale, ne' su dischi fisici: provala prima su dati non
+  importanti e verifica sempre i backup con «Solo verifica integrità».
+- Il disco su cui gira Windows si puo' copiare, ma i file aperti cambiano durante la copia: per una
+  copia perfetta del disco di sistema usa la pennetta BKHD Live. Il ripristino sul disco di Windows
+  in esecuzione non e' consentito (usa la pennetta).
+- «Solo settori usati» non e' ancora disponibile su Windows (i backup Linux di questo tipo si
+  ripristinano normalmente).
+- Per ripristinare su un disco, Windows deve poter bloccare i suoi volumi: chiudi le finestre e i
+  programmi che lo usano.
+
+LICENZE
+BKHD Backup: GNU GPL versione 3 o successiva (LICENSE.txt), © 2026 fabionet.
+Sorgenti: https://github.com/fabionet/bkhd-backup
+Componenti inclusi: zstd (BSD, licenses/zstd-LICENSE.txt), Mbed TLS (Apache 2.0,
+licenses/mbedtls-LICENSE.txt), rclone (MIT, licenses/rclone-COPYING.txt).

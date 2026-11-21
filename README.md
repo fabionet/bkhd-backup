@@ -87,6 +87,32 @@ nella posizione esatta → `fsync` → svuotamento della RAM → pacchetto succe
 - Protezioni: rifiuta di ripristinare su dischi montati/in uso o più piccoli del backup; per confermare
   bisogna scrivere il nome del dispositivo.
 
+## BKHD Backup per Windows (anteprima 1.0.0 beta 1)
+
+Versione nativa per Windows (cartella [`windows/`](windows)), scritta in C con le API di Windows:
+stessi pacchetti `.bkhd`, stessi manifest, indici e firme del motore Linux, quindi **un backup fatto su
+Windows si ripristina con la pennetta BKHD Live e viceversa** (anche i backup protetti da password, quelli
+interrotti e quelli «solo settori usati» creati su Linux).
+
+| Zip | Per | Cloud |
+|---|---|---|
+| `bkhd-backup-windows-…-x64.zip` | Windows 10 e 11 a 64 bit | sì (rclone ufficiale), pacchetti fino a 8 GB |
+| `bkhd-backup-windows-…-x86-sse.zip` | PC a 32 bit con **solo SSE** (Pentium III, Athlon XP o successivi), Windows XP SP3 e 7 | Windows 7: sì (rclone 1.67 compilato senza SSE2), pacchetti fino a 700 MB; Windows XP: solo disco o cartella di rete |
+
+- Interfaccia grafica (`bkhd-backup.exe`, schede Backup e Ripristino) e riga di comando (`bkhd-cli.exe`, stesse
+  opzioni di `bkhd-engine`).
+- Lettura dei dischi da `\\.\PhysicalDriveN`, settori illeggibili «riprova» o «salta», ripresa dei backup
+  interrotti, compressione zstd, password AES-256-GCM, ripristino su disco (volumi bloccati e smontati) o su
+  file immagine, verifica dell'integrità.
+- La versione a 32 bit è compilata per Pentium III (`-march=pentium3 -mno-sse2`) e controllata istruzione per
+  istruzione da `windows/tools/check_sse.py`; usa solo funzioni presenti in Windows XP.
+- Limiti dell'anteprima: collaudata con Wine e con i test di compatibilità, non ancora su PC Windows reali; il
+  disco di Windows in esecuzione non si ripristina (si usa la pennetta) e «solo settori usati» non è ancora
+  disponibile per i backup fatti su Windows.
+
+Compilazione (da Linux, con mingw-w64): `windows/build.sh`; zip della release: `windows/package.sh`;
+test di compatibilità con Wine: `tests/windows_compat.sh`.
+
 ## Cloud supportati
 
 Il trasferimento usa [rclone](https://rclone.org), quindi funziona con oltre 70 servizi: Google Drive,
@@ -168,6 +194,10 @@ Cartella sul cloud: `<cartella>/<nome-backup>/`
 | `packaging/build-deb.sh` | crea il pacchetto .deb |
 | `tests/run_tests.sh` | test end-to-end con un cloud simulato (non serve root) |
 | `tests/gui_smoke.py` | test automatico dell'interfaccia |
+| `windows/src/` | BKHD Backup per Windows: motore, interfaccia grafica e riga di comando in C |
+| `windows/third_party/` | zstd 1.5.7 e Mbed TLS 3.6.8 (solo i file usati) |
+| `windows/build.sh`, `windows/package.sh` | compilazione (x86 solo SSE e x64) e zip della release |
+| `tests/windows_compat.sh` | compatibilità Windows ↔ Linux con Wine (backup, ripristino, password, ripresa, cloud) |
 
 ## Rigenerare la guida PDF
 

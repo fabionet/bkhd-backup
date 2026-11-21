@@ -5,3 +5,4 @@ dist/
 *.iso.sha256
 __pycache__/
 *.pyc
+windows/build/

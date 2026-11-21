@@ -1,0 +1,156 @@
+// BKHD Backup per Windows - risorse (icona, versione, manifest)
+#pragma code_page(65001)
+#include <windows.h>
+
+#ifdef BKHD_ARCH_x86
+1 ICON "bkhd-xp.ico"
+#else
+1 ICON "bkhd.ico"
+#endif
+
+1 RT_MANIFEST "bkhd.manifest"
+
+1 VERSIONINFO
+FILEVERSION 1,0,0,1
+PRODUCTVERSION 1,0,0,1
+FILEOS 0x40004
+FILETYPE 0x1
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "041004B0"
+    BEGIN
+      VALUE "CompanyName", "fabionet"
+      VALUE "FileDescription", "BKHD Backup - backup settore per settore di dischi su cloud o disco"
+      VALUE "FileVersion", "1.0.0-beta1"
+      VALUE "InternalName", "bkhd-backup"
+      VALUE "LegalCopyright", "© 2026 fabionet - GNU GPL v3 o successiva"
+      VALUE "OriginalFilename", "bkhd-backup.exe"
+      VALUE "ProductName", "BKHD Backup per Windows"
+      VALUE "ProductVersion", "1.0.0-beta1"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x0410, 1200
+  END
+END
+
+#include "../src/resource.h"
+#include <commctrl.h>
+
+IDD_MAIN DIALOGEX 0, 0, 470, 400
+STYLE DS_SHELLFONT | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_CLIPCHILDREN
+EXSTYLE WS_EX_CONTROLPARENT | WS_EX_APPWINDOW
+CAPTION "BKHD Backup"
+FONT 8, "MS Shell Dlg 2"
+BEGIN
+  ICON IDI_APP, IDC_APPICON, 8, 6, 21, 20
+  LTEXT "BKHD Backup", IDC_TITLE, 34, 4, 300, 14
+  LTEXT "Il tuo disco, al sicuro tra le nuvole — copia settore per settore su cloud o su disco", IDC_SUBTITLE, 34, 19, 430, 9
+  CONTROL "", IDC_TAB, "SysTabControl32", WS_TABSTOP, 6, 32, 458, 250
+  LTEXT "Pronto.", IDC_STATUS, 8, 287, 456, 9, SS_ENDELLIPSIS
+  LTEXT "Fase corrente", IDC_LBL_PHASE, 8, 299, 58, 8
+  CONTROL "", IDC_PROG1, "msctls_progress32", 0, 68, 298, 396, 9
+  LTEXT "Totale", IDC_LBL_TOTAL, 8, 311, 58, 8
+  CONTROL "", IDC_PROG2, "msctls_progress32", 0, 68, 310, 396, 9
+  EDITTEXT IDC_LOG, 6, 323, 458, 52, ES_MULTILINE | ES_READONLY | ES_AUTOVSCROLL | WS_VSCROLL
+  PUSHBUTTON "Informazioni", IDC_ABOUT, 6, 380, 70, 14
+  PUSHBUTTON "Annulla operazione", IDC_CANCEL_JOB, 380, 380, 84, 14, WS_DISABLED
+END
+
+IDD_BACKUP DIALOGEX 0, 0, 448, 226
+STYLE DS_SHELLFONT | DS_CONTROL | WS_CHILD
+EXSTYLE WS_EX_CONTROLPARENT
+FONT 8, "MS Shell Dlg 2"
+BEGIN
+  GROUPBOX "1. Disco da copiare", -1, 4, 2, 440, 30
+  COMBOBOX IDC_B_SOURCE, 12, 14, 300, 200, CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+  PUSHBUTTON "Aggiorna", IDC_B_REFRESH, 318, 13, 50, 14
+  PUSHBUTTON "File immagine…", IDC_B_IMAGE, 372, 13, 66, 14
+
+  GROUPBOX "2. Dove salvare il backup", -1, 4, 36, 440, 94
+  AUTORADIOBUTTON "Cloud (rclone: il pacchetto passa dalla RAM, nessuna cache su disco)", IDC_B_CLOUD, 12, 48, 254, 10, WS_GROUP | WS_TABSTOP
+  AUTORADIOBUTTON "Disco o cartella (anche di rete)", IDC_B_LOCAL, 270, 48, 168, 10
+  LTEXT "Cloud", -1, 12, 64, 52, 8
+  COMBOBOX IDC_B_REMOTE, 66, 62, 246, 120, CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP | WS_GROUP
+  PUSHBUTTON "Configura cloud…", IDC_B_CONFIG, 318, 61, 120, 14
+  LTEXT "Disco/cartella", -1, 12, 81, 52, 8
+  EDITTEXT IDC_B_FOLDER, 66, 79, 246, 12, ES_AUTOHSCROLL
+  PUSHBUTTON "Sfoglia…", IDC_B_BROWSE, 318, 78, 120, 14
+  LTEXT "Cartella", -1, 12, 97, 52, 8
+  EDITTEXT IDC_B_PATH, 66, 95, 100, 12, ES_AUTOHSCROLL
+  LTEXT "Nome", -1, 12, 114, 52, 8
+  EDITTEXT IDC_B_NAME, 66, 112, 246, 12, ES_AUTOHSCROLL
+  PUSHBUTTON "Cerca backup interrotti", IDC_B_FIND, 318, 111, 120, 14
+
+  GROUPBOX "3. Pacchetti e opzioni", -1, 4, 134, 440, 72
+  LTEXT "Pacchetti da", -1, 12, 148, 52, 8
+  COMBOBOX IDC_B_CHUNK, 66, 146, 150, 200, CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
+  AUTOCHECKBOX "Compressione zstd", IDC_B_ZSTD, 226, 147, 96, 10, WS_TABSTOP
+  AUTOCHECKBOX "Riprendi il backup interrotto", IDC_B_RESUME, 326, 147, 114, 10, WS_TABSTOP
+  AUTOCHECKBOX "Proteggi con password", IDC_B_ENCRYPT, 12, 164, 100, 10, WS_TABSTOP
+  EDITTEXT IDC_B_PW1, 116, 162, 100, 12, ES_PASSWORD | ES_AUTOHSCROLL
+  LTEXT "ripeti", -1, 224, 164, 22, 8
+  EDITTEXT IDC_B_PW2, 248, 162, 100, 12, ES_PASSWORD | ES_AUTOHSCROLL
+  LTEXT "Settori illeggibili", -1, 12, 181, 62, 8
+  AUTORADIOBUTTON "Riprova e copia ciò che si legge", IDC_B_RETRY, 76, 180, 140, 10, WS_GROUP | WS_TABSTOP
+  AUTORADIOBUTTON "Salta subito (più veloce, meno stress per il disco)", IDC_B_SKIP, 220, 180, 218, 10
+  LTEXT "", IDC_B_INFO, 12, 194, 426, 9, WS_GROUP
+  DEFPUSHBUTTON "Avvia backup", IDC_B_START, 348, 210, 96, 14, WS_GROUP | WS_TABSTOP
+END
+
+IDD_RESTORE DIALOGEX 0, 0, 448, 226
+STYLE DS_SHELLFONT | DS_CONTROL | WS_CHILD
+EXSTYLE WS_EX_CONTROLPARENT
+FONT 8, "MS Shell Dlg 2"
+BEGIN
+  GROUPBOX "1. Backup da ripristinare", -1, 4, 2, 440, 140
+  AUTORADIOBUTTON "Cloud", IDC_R_CLOUD, 12, 14, 60, 10, WS_GROUP | WS_TABSTOP
+  AUTORADIOBUTTON "Disco o cartella (anche di rete)", IDC_R_LOCAL, 76, 14, 160, 10
+  LTEXT "Cloud", -1, 12, 30, 52, 8
+  COMBOBOX IDC_R_REMOTE, 66, 28, 246, 120, CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP | WS_GROUP
+  PUSHBUTTON "Configura cloud…", IDC_R_CONFIG, 318, 27, 120, 14
+  LTEXT "Disco/cartella", -1, 12, 47, 52, 8
+  EDITTEXT IDC_R_FOLDER, 66, 45, 246, 12, ES_AUTOHSCROLL
+  PUSHBUTTON "Sfoglia…", IDC_R_BROWSE, 318, 44, 120, 14
+  LTEXT "Cartella", -1, 12, 63, 52, 8
+  EDITTEXT IDC_R_PATH, 66, 61, 100, 12, ES_AUTOHSCROLL
+  PUSHBUTTON "Cerca backup", IDC_R_SEARCH, 318, 60, 120, 14
+  CONTROL "", IDC_R_LIST, "SysListView32", LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | WS_BORDER | WS_TABSTOP, 12, 77, 426, 44
+  LTEXT "Password", -1, 12, 127, 52, 8
+  EDITTEXT IDC_R_PW, 66, 125, 150, 12, ES_PASSWORD | ES_AUTOHSCROLL
+  LTEXT "(solo per i backup protetti)", -1, 222, 127, 150, 8
+
+  GROUPBOX "2. Destinazione", -1, 4, 146, 440, 60
+  AUTORADIOBUTTON "Disco", IDC_R_DISK, 12, 159, 52, 10, WS_GROUP | WS_TABSTOP
+  AUTORADIOBUTTON "Immagine", IDC_R_FILE, 12, 176, 52, 10
+  COMBOBOX IDC_R_TARGET, 66, 157, 300, 200, CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP | WS_GROUP
+  PUSHBUTTON "Aggiorna", IDC_R_REFRESH, 372, 156, 66, 14
+  EDITTEXT IDC_R_IMG, 66, 174, 300, 12, ES_AUTOHSCROLL
+  PUSHBUTTON "Sfoglia…", IDC_R_IMGBROWSE, 372, 173, 66, 14
+  AUTOCHECKBOX "Solo verifica integrità (scarica e controlla senza scrivere nulla)", IDC_R_VERIFY, 12, 191, 300, 10, WS_TABSTOP
+  DEFPUSHBUTTON "Avvia ripristino", IDC_R_START, 348, 210, 96, 14, WS_TABSTOP
+END
+
+IDD_CONFIRM DIALOGEX 0, 0, 280, 96
+STYLE DS_SHELLFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Conferma il ripristino"
+FONT 8, "MS Shell Dlg 2"
+BEGIN
+  LTEXT "", IDC_C_TEXT, 8, 8, 264, 44
+  EDITTEXT IDC_C_EDIT, 8, 56, 264, 12, ES_AUTOHSCROLL
+  DEFPUSHBUTTON "Sovrascrivi", IDOK, 156, 76, 56, 14, WS_DISABLED
+  PUSHBUTTON "Annulla", IDCANCEL, 216, 76, 56, 14
+END
+
+IDD_PICK DIALOGEX 0, 0, 320, 150
+STYLE DS_SHELLFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Backup interrotti"
+FONT 8, "MS Shell Dlg 2"
+BEGIN
+  LTEXT "Scegli il backup interrotto da riprendere:", IDC_P_TEXT, 8, 8, 304, 9
+  LISTBOX IDC_P_LIST, 8, 20, 304, 104, LBS_NOTIFY | WS_VSCROLL | WS_BORDER | WS_TABSTOP
+  DEFPUSHBUTTON "Riprendi questo backup", IDOK, 156, 130, 96, 14
+  PUSHBUTTON "Annulla", IDCANCEL, 256, 130, 56, 14
+END
